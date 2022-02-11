@@ -193,8 +193,13 @@ namespace TicketFinder
             // If this is a number then check how close it is to other numbers in the history
             if (int.TryParse(query, out int queryNumber))
             {
-                // Look at the 3 most recent searches for each URL;
-                const int depthInHistory = 3;
+                // Look at the most recent searches for each URL
+                const int depthInHistory = 5;
+
+                // Decide which indices are used to compare ranges
+                const int lower = depthInHistory / 3;
+                const int middle = depthInHistory / 2;
+                const int upper = depthInHistory - lower - 1;
 
                 // Prepare a list to hold all these numbers
                 List<int>[] recentNumbers = new List<int>[urls.Count];
@@ -219,10 +224,22 @@ namespace TicketFinder
                     }
                 }
 
-                // Sort the lists so it's easier to find the median
+                // Sort the lists and make sure it's the right size
                 for (int i = 0; i < recentNumbers.Length; i++)
                 {
-                    recentNumbers[i].Sort();
+                    if (recentNumbers[i].Count == 0)
+                    {
+                        recentNumbers[i] = null;
+                    }
+                    else
+                    {
+                        int j = 0;
+                        while (recentNumbers[i].Count < depthInHistory)
+                        {
+                            recentNumbers[i].Add(recentNumbers[i][j++]);
+                        }
+                        recentNumbers[i].Sort();
+                    }
                 }
 
                 // Find the closest median to the query, with some extra conditions
@@ -231,18 +248,33 @@ namespace TicketFinder
                 for (int i = 0; i < recentNumbers.Length; i++)
                 {
                     // Don't look at urls with no history
-                    if (recentNumbers[i].Count > 0)
+                    if (recentNumbers[i] == null) continue;
+
+                    // Get the absolute difference between the searched number and the url's median number
+                    int difference = Math.Abs(queryNumber - recentNumbers[i][middle]);
+
+                    // If this isn't an improvement then ignore it
+                    if (difference >= bestDifference) continue;
+
+                    // If the difference is too big then ignore it
+                    if (difference > Math.Abs(queryNumber) && difference > 50) continue;
+
+                    // If this url's range is too similar to another url's range then ignore it
+                    bool rangeIsOkay = true;
+                    for (int j = 0; j < i; j++)
                     {
-                        // Get the absolute difference between the searched number and the url's median number
-                        int difference = Math.Abs(queryNumber - recentNumbers[i][recentNumbers[i].Count / 2]);
-                        // Update the best url if this difference is smaller than the best difference
-                        // Also the searched number cannot be more than double the median
-                        if (difference < bestDifference && (difference < Math.Abs(queryNumber) || difference < 50))
+                        if (recentNumbers[i][lower] < recentNumbers[j][upper] && 
+                            recentNumbers[j][lower] < recentNumbers[i][upper])
                         {
-                            bestIndex = i;
-                            bestDifference = difference;
+                            rangeIsOkay = false;
+                            break;
                         }
                     }
+                    if (!rangeIsOkay) continue;
+
+                    // Record that this is an improvement
+                    bestIndex = i;
+                    bestDifference = difference;
                 }
 
                 // Return the best url
