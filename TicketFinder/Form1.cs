@@ -45,8 +45,10 @@ namespace TicketFinder
             urls.Clear();
             foreach (string buttonInfo in Properties.Settings.Default.Buttons)
             {
-                string[] info = buttonInfo.Split('\t');
-                urls.Add(new URL { displayName = info[0], url = info[1] });
+                if (URL.TryParseFileData(buttonInfo, out URL url))
+                {
+                    urls.Add(url);
+                }
             }
             ReloadButtons();
         }
@@ -92,8 +94,10 @@ namespace TicketFinder
             recentSearches.Clear();
             foreach (string recentInfo in Properties.Settings.Default.Recent)
             {
-                string[] info = recentInfo.Split('\t');
-                recentSearches.Add(new RecentSearch { query = info[0], button = info[1] });
+                if (RecentSearch.TryParseFileData(recentInfo, out RecentSearch recentSearch))
+                {
+                    recentSearches.Add(recentSearch);
+                }
             }
             ReloadContextMenu();
         }
@@ -320,7 +324,7 @@ namespace TicketFinder
             Properties.Settings.Default.Recent.Clear();
             foreach(RecentSearch recent in recentSearches)
             {
-                Properties.Settings.Default.Recent.Add(recent.query + "\t" + recent.button);
+                Properties.Settings.Default.Recent.Add(recent.ToFileData());
             }
             Properties.Settings.Default.Save();
         }
