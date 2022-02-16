@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using TicketFinder.Validation;
@@ -17,8 +18,10 @@ namespace TicketFinder.Settings
         {
             foreach (string buttonInfo in Properties.Settings.Default.Buttons)
             {
-                string[] info = buttonInfo.Split('\t');
-                NewVM(info[0], info[1]);
+                if (URL.TryParseFileData(buttonInfo, out string displayName, out string url))
+                {
+                    NewVM(displayName, url);
+                }
             }
             RefreshReorderingButtons();
         }
@@ -139,6 +142,29 @@ namespace TicketFinder.Settings
         }
 
         /// <summary>
+        /// When the import button is pressed, let the user select a file that will populate the table
+        /// </summary>
+        private void BTNimport_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() != DialogResult.OK) return;
+
+            saveFileDialog1.FileName = openFileDialog1.FileName;
+
+            flowLayoutPanel1.Controls.Clear();
+
+            using (StreamReader sr = new StreamReader(openFileDialog1.FileName))
+            {
+                while (!sr.EndOfStream)
+                {
+                    if (URL.TryParseFileData(sr.ReadLine(), out string displayName, out string url))
+                    {
+                        NewVM(displayName, url);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Display the help window
         /// </summary>
         private void BTNhelp_Click(object sender, EventArgs e)
@@ -169,12 +195,7 @@ namespace TicketFinder.Settings
                 RefreshReorderingButtons();
             }
 
-            // Transform the data into objects that are easier to reference
-            List<URL> data = new List<URL>();
-            foreach (CustomizableURLViewModel vm in flowLayoutPanel1.Controls)
-            {
-                data.Add(new URL { displayName = vm.DisplayName, url = vm.URL });
-            }
+            List<URL> data = GetDataFromScreen();
 
             // Make sure the data is valid
             var validationResult = Validate(data);
@@ -193,13 +214,45 @@ namespace TicketFinder.Settings
             Properties.Settings.Default.Buttons.Clear();
             foreach (URL url in data)
             {
-                Properties.Settings.Default.Buttons.Add(url.displayName + '\t' + url.url);
+                Properties.Settings.Default.Buttons.Add(url.ToFileData());
             }
             Properties.Settings.Default.Save();
 
             // Close the window
             DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+        /// <summary>
+        /// Transform the data into objects that are easier to reference
+        /// </summary>
+        List<URL> GetDataFromScreen()
+        {
+            List<URL> data = new List<URL>();
+            foreach (CustomizableURLViewModel vm in flowLayoutPanel1.Controls)
+            {
+                data.Add(new URL { displayName = vm.DisplayName, url = vm.URL });
+            }
+            return data;
+        }
+
+        /// <summary>
+        /// When the export button is pressed, save the table to a file
+        /// </summary>
+        private void BTNexport_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialog1.ShowDialog() != DialogResult.OK) return;
+
+            openFileDialog1.FileName = saveFileDialog1.FileName;
+
+            using (StreamWriter sw = new StreamWriter(saveFileDialog1.FileName))
+            {
+                var data = GetDataFromScreen();
+                foreach (URL url in data)
+                {
+                    sw.WriteLine(url.ToFileData());
+                }
+            }
         }
 
         /// <summary>

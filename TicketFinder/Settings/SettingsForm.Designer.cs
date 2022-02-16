@@ -36,15 +36,19 @@ namespace TicketFinder.Settings
             this.BTNcanel = new System.Windows.Forms.Button();
             this.BTNsave = new System.Windows.Forms.Button();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.BTNimport = new System.Windows.Forms.Button();
+            this.BTNexport = new System.Windows.Forms.Button();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.SuspendLayout();
             // 
             // BTNhelp
             // 
             this.BTNhelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.BTNhelp.Location = new System.Drawing.Point(93, 295);
+            this.BTNhelp.Location = new System.Drawing.Point(174, 295);
             this.BTNhelp.Name = "BTNhelp";
             this.BTNhelp.Size = new System.Drawing.Size(75, 23);
-            this.BTNhelp.TabIndex = 13;
+            this.BTNhelp.TabIndex = 14;
             this.BTNhelp.Text = "Help";
             this.BTNhelp.UseVisualStyleBackColor = true;
             this.BTNhelp.Click += new System.EventHandler(this.BTNhelp_Click);
@@ -84,7 +88,7 @@ namespace TicketFinder.Settings
             this.BTNcanel.Location = new System.Drawing.Point(579, 295);
             this.BTNcanel.Name = "BTNcanel";
             this.BTNcanel.Size = new System.Drawing.Size(75, 23);
-            this.BTNcanel.TabIndex = 15;
+            this.BTNcanel.TabIndex = 17;
             this.BTNcanel.Text = "Cancel";
             this.BTNcanel.UseVisualStyleBackColor = true;
             this.BTNcanel.Click += new System.EventHandler(this.BTNcanel_Click);
@@ -92,10 +96,10 @@ namespace TicketFinder.Settings
             // BTNsave
             // 
             this.BTNsave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.BTNsave.Location = new System.Drawing.Point(498, 295);
+            this.BTNsave.Location = new System.Drawing.Point(417, 295);
             this.BTNsave.Name = "BTNsave";
             this.BTNsave.Size = new System.Drawing.Size(75, 23);
-            this.BTNsave.TabIndex = 14;
+            this.BTNsave.TabIndex = 15;
             this.BTNsave.Text = "Save";
             this.BTNsave.UseVisualStyleBackColor = true;
             this.BTNsave.Click += new System.EventHandler(this.BTNsave_Click);
@@ -111,11 +115,43 @@ namespace TicketFinder.Settings
             this.flowLayoutPanel1.Size = new System.Drawing.Size(642, 264);
             this.flowLayoutPanel1.TabIndex = 9;
             // 
+            // BTNimport
+            // 
+            this.BTNimport.Location = new System.Drawing.Point(93, 295);
+            this.BTNimport.Name = "BTNimport";
+            this.BTNimport.Size = new System.Drawing.Size(75, 23);
+            this.BTNimport.TabIndex = 13;
+            this.BTNimport.Text = "Import";
+            this.BTNimport.UseVisualStyleBackColor = true;
+            this.BTNimport.Click += new System.EventHandler(this.BTNimport_Click);
+            // 
+            // BTNexport
+            // 
+            this.BTNexport.Location = new System.Drawing.Point(498, 295);
+            this.BTNexport.Name = "BTNexport";
+            this.BTNexport.Size = new System.Drawing.Size(75, 23);
+            this.BTNexport.TabIndex = 16;
+            this.BTNexport.Text = "Export";
+            this.BTNexport.UseVisualStyleBackColor = true;
+            this.BTNexport.Click += new System.EventHandler(this.BTNexport_Click);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "TicketFinder.txt";
+            this.openFileDialog1.Filter = "All Files (*.*)|*.*";
+            // 
+            // saveFileDialog1
+            // 
+            this.saveFileDialog1.FileName = "TicketFinder.txt";
+            this.saveFileDialog1.Filter = "Any kind of text, I don\'t care|*.*";
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(666, 330);
+            this.Controls.Add(this.BTNexport);
+            this.Controls.Add(this.BTNimport);
             this.Controls.Add(this.BTNhelp);
             this.Controls.Add(this.BTNadd);
             this.Controls.Add(this.label1);
@@ -144,5 +180,9 @@ namespace TicketFinder.Settings
         private System.Windows.Forms.Button BTNcanel;
         private System.Windows.Forms.Button BTNsave;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Button BTNimport;
+        private System.Windows.Forms.Button BTNexport;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
     }
 }
