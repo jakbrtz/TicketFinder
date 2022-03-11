@@ -267,7 +267,8 @@ namespace TicketFinder
                     bool rangeIsOkay = true;
                     for (int j = 0; j < i; j++)
                     {
-                        if (recentNumbers[i][lower] < recentNumbers[j][upper] && 
+                        if (recentNumbers[j] != null &&
+                            recentNumbers[i][lower] < recentNumbers[j][upper] && 
                             recentNumbers[j][lower] < recentNumbers[i][upper])
                         {
                             rangeIsOkay = false;
