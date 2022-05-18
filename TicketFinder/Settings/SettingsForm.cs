@@ -144,7 +144,7 @@ namespace TicketFinder.Settings
         /// <summary>
         /// When the import button is pressed, let the user select a file that will populate the table
         /// </summary>
-        private void BTNimport_Click(object sender, EventArgs e)
+        private void ImportToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() != DialogResult.OK) return;
 
@@ -167,7 +167,7 @@ namespace TicketFinder.Settings
         /// <summary>
         /// Display the help window
         /// </summary>
-        private void BTNhelp_Click(object sender, EventArgs e)
+        private void HelpToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new Help.HelpForm().ShowDialog();
         }
@@ -239,7 +239,7 @@ namespace TicketFinder.Settings
         /// <summary>
         /// When the export button is pressed, save the table to a file
         /// </summary>
-        private void BTNexport_Click(object sender, EventArgs e)
+        private void ExportToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (saveFileDialog1.ShowDialog() != DialogResult.OK) return;
 
