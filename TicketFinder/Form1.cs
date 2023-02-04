@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -67,6 +67,8 @@ namespace TicketFinder
 
             this.Height = this.urls.Count > 2 ? 119: 102;
             flowLayoutPanel1.Height = this.urls.Count > 2 ? 49 : 32;
+
+            ReloadContextMenuForButtons();
         }
 
         /// <summary>
@@ -114,24 +116,71 @@ namespace TicketFinder
                 for (int i = 0; i < 10 && i < recentSearches.Count; i++)
                 {
                     RecentSearch recent = recentSearches[i];
-                    AddMenuItem(recent.button + " \t" + recent.query, (a, b) => PressRecent(recent));
+                    historyToolStripMenuItem.DropDownItems.Add(MakeToolStripMenuItem(recent));
+                }
+            }
+
+            ReloadContextMenuForButtons();
+        }
+
+        /// <summary>
+        /// Update the context menu strip for all the buttons
+        /// </summary>
+        private void ReloadContextMenuForButtons()
+        {
+            for (int i = 0; i < urls.Count; i++)
+            {
+                Button button = flowLayoutPanel1.Controls[i] as Button;
+                List<ToolStripItem> replacementHistoryStrip = new List<ToolStripItem>();
+                int countRecent = 0;
+                for (int j = 0; countRecent < 10 && j < recentSearches.Count; j++)
+                {
+                    RecentSearch recent = recentSearches[j];
+                    if (recent.button == urls[i].displayName)
+                    {
+                        replacementHistoryStrip.Add(MakeToolStripMenuItem(recent));
+                        countRecent++;
+                    }
+                }
+                if (countRecent != 0)
+                {
+                    ContextMenuStrip cloneContextMenuStrip = new ContextMenuStrip();
+                    ToolStripMenuItem settings = new ToolStripMenuItem() { Text = settingsToolStripMenuItem.Text };
+                    settings.Click += SettingsToolStripMenuItem_Click;
+                    cloneContextMenuStrip.Items.Add(settings);
+                    ToolStripMenuItem history = new ToolStripMenuItem() { Text = historyToolStripMenuItem.Text };
+                    history.DropDownItems.AddRange(replacementHistoryStrip.ToArray());
+                    cloneContextMenuStrip.Items.Add(history);
+                    ToolStripMenuItem help = new ToolStripMenuItem() { Text = helpToolStripMenuItem.Text };
+                    help.Click += HelpToolStripMenuItem_Click;
+                    cloneContextMenuStrip.Items.Add(help);
+                    button.ContextMenuStrip = cloneContextMenuStrip;
                 }
             }
         }
 
         /// <summary>
-        /// Add an option to the 'history' drop down menu
+        /// Create an option for the 'history' drop down menu
+        /// </summary>
+        /// <param name="recent"></param>
+        private ToolStripMenuItem MakeToolStripMenuItem(RecentSearch recent)
+        {
+            return MakeToolStripMenuItem(recent.button + " \t" + recent.query, (a, b) => PressRecent(recent));
+        }
+
+        /// <summary>
+        /// Create an option for a context menu
         /// </summary>
         /// <param name="label">The name that appears on the menu</param>
         /// <param name="onClick">The action that happens when the menu item is clicked</param>
-        private void AddMenuItem(string label, EventHandler onClick)
+        private ToolStripMenuItem MakeToolStripMenuItem(string label, EventHandler onClick)
         {
             ToolStripMenuItem item = new ToolStripMenuItem
             {
                 Text = label
             };
             item.Click += onClick;
-            historyToolStripMenuItem.DropDownItems.Add(item);
+            return item;
         }
 
         /// <summary>
