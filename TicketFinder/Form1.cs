@@ -431,18 +431,23 @@ namespace TicketFinder
         /// <summary>
         /// Trick the form into thinking it's being dragged when it gets clicked on
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             const int WM_NCLBUTTONDOWN = 0xA1;
             const int HT_CAPTION = 0x2;
 
-            if (e.Button == MouseButtons.Left)
+            if (e.Button != MouseButtons.Left)
             {
-                ReleaseCapture();
-                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+                return;
             }
+
+            if (sender is TextBox textbox && !string.IsNullOrEmpty(textbox.Text))
+            {
+                return;
+            }
+
+            ReleaseCapture();
+            SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
         }
 
         #endregion

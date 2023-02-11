@@ -53,6 +53,7 @@ namespace TicketFinder
             this.textBox1.Size = new System.Drawing.Size(218, 62);
             this.textBox1.TabIndex = 0;
             this.textBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TBX_KeyPress);
+            this.textBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
             // contextMenuStrip1
             // 
