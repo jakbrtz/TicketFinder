@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,12 +18,13 @@ namespace TicketFinder.Settings
         {
             foreach (string buttonInfo in Properties.Settings.Default.Buttons)
             {
-                if (URL.TryParseFileData(buttonInfo, out string displayName, out string url))
+                if (URL.TryParseFileData(buttonInfo, out string displayName, out string url, out bool range, out bool nonnum))
                 {
-                    NewVM(displayName, url);
+                    NewVM(displayName, url, range, nonnum);
                 }
             }
             RefreshReorderingButtons();
+            RedoValidationChecks();
         }
 
         /// <summary>
@@ -31,11 +32,15 @@ namespace TicketFinder.Settings
         /// </summary>
         /// <param name="displayName">Automatically fill in the name</param>
         /// <param name="url">Automatically fill in the url</param>
-        void NewVM(string displayName, string url)
+        /// <param name="range">Automatically fill in whether the range checkbox should be checked</param>
+        /// <param name="nonnum">Automatically fill in whether the non-numeric radiobutton should be checked</param>
+        void NewVM(string displayName, string url, bool range, bool nonnum)
         {
             CustomizableURLViewModel vm = new CustomizableURLViewModel { 
                 DisplayName = displayName,
                 URL = url,
+                Range = range,
+                NonNumeric = nonnum,
             };
             vm.DataChanged += Vm_DataChanged;
             vm.DeleteButtonPressed += Vm_DeleteButtonPressed;
@@ -50,11 +55,23 @@ namespace TicketFinder.Settings
         /// <param name="vm">The row object which contained the data</param>
         private void Vm_DataChanged(CustomizableURLViewModel vm)
         {
+            if (vm.NonNumeric)
+            {
+                foreach (CustomizableURLViewModel row in flowLayoutPanel1.Controls)
+                {
+                    if (row != vm)
+                    {
+                        row.NonNumeric = false;
+                    }
+                }
+            }
+
             RedoValidationChecks();
         }
 
         /// <summary>
-        /// Put error borders around invalid data and remove error borders from valid data
+        /// Put error borders around invalid data and remove error borders from valid data,
+        /// and make sure that only one of the rows has the NonNumeric radio button checked
         /// </summary>
         void RedoValidationChecks()
         {
@@ -84,6 +101,26 @@ namespace TicketFinder.Settings
                 {
                     row.SetValidationError("URL cannot contain a tab character", forDisplayName: false);
                 }
+            }
+
+            bool found = false;
+            foreach (CustomizableURLViewModel row in flowLayoutPanel1.Controls)
+            {
+                if (row.NonNumeric)
+                {
+                    if (!found)
+                    {
+                        found = true;
+                    }
+                    else
+                    {
+                        row.NonNumeric = false;
+                    }
+                }
+            }
+            if (!found && flowLayoutPanel1.Controls.Count > 0)
+            {
+                (flowLayoutPanel1.Controls[0] as CustomizableURLViewModel).NonNumeric = true;
             }
         }
 
@@ -136,7 +173,7 @@ namespace TicketFinder.Settings
         /// </summary>
         private void BTNadd_Click(object sender, EventArgs e)
         {
-            NewVM("", "");
+            NewVM("", "", true, false);
             RefreshReorderingButtons();
             flowLayoutPanel1.Controls[flowLayoutPanel1.Controls.Count - 1].Focus();
         }
@@ -156,9 +193,9 @@ namespace TicketFinder.Settings
             {
                 while (!sr.EndOfStream)
                 {
-                    if (URL.TryParseFileData(sr.ReadLine(), out string displayName, out string url))
+                    if (URL.TryParseFileData(sr.ReadLine(), out string displayName, out string url, out bool range, out bool nonnum))
                     {
-                        NewVM(displayName, url);
+                        NewVM(displayName, url, range, nonnum);
                     }
                 }
             }
@@ -231,7 +268,7 @@ namespace TicketFinder.Settings
             List<URL> data = new List<URL>();
             foreach (CustomizableURLViewModel vm in flowLayoutPanel1.Controls)
             {
-                data.Add(new URL { displayName = vm.DisplayName, url = vm.URL });
+                data.Add(new URL { displayName = vm.DisplayName, url = vm.URL, range = vm.Range, nonnum = vm.NonNumeric });
             }
             return data;
         }

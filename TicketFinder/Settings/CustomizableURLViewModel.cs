@@ -22,6 +22,18 @@ namespace TicketFinder.Settings
             set => TBXlongname.Text = value;
         }
 
+        public bool Range
+        {
+            get => CBXrange.Checked;
+            set => CBXrange.Checked = value;
+        }
+
+        public bool NonNumeric
+        {
+            get => RBNnonnum.Checked;
+            set => RBNnonnum.Checked = value;
+        }
+
         public event Action<CustomizableURLViewModel> DeleteButtonPressed;
 
         private void BTNdelete_Click(object sender, EventArgs e)
@@ -37,6 +49,16 @@ namespace TicketFinder.Settings
         }
 
         private void TBXlongname_TextChanged(object sender, EventArgs e)
+        {
+            DataChanged?.Invoke(this);
+        }
+
+        private void CBXrange_CheckedChanged(object sender, EventArgs e)
+        {
+            DataChanged?.Invoke(this);
+        }
+
+        private void RBNnonnum_CheckedChanged(object sender, EventArgs e)
         {
             DataChanged?.Invoke(this);
         }

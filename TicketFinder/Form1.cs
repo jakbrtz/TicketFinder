@@ -268,7 +268,7 @@ namespace TicketFinder
                     {
                         if (urls[i].displayName == recentSearch.button)
                         {
-                            if (recentNumbers[i].Count < depthInHistory && int.TryParse(recentSearch.query, out int recentNumber))
+                            if (urls[i].range && recentNumbers[i].Count < depthInHistory && int.TryParse(recentSearch.query, out int recentNumber))
                             {
                                 recentNumbers[i].Add(recentNumber);
                             }
@@ -335,6 +335,17 @@ namespace TicketFinder
                 if (bestIndex != -1)
                 {
                     return urls[bestIndex];
+                }
+            }
+            else
+            {
+                // This is not a number, so pick the url that is used for non-numeric searches
+                foreach (URL url in urls)
+                {
+                    if (url.nonnum)
+                    {
+                        return url;
+                    }
                 }
             }
 
