@@ -117,10 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="label7.Text" xml:space="preserve">
+    <value>The app guesses projects based on your history.
+
+It first checks if you've searched a term before. 
+Otherwise if you've searched a number it looks for close numbers in your history, but only for projects with "range" checked in the settings screen.
+Otherwise it uses the project with "Text" selected in Settings.</value>
+  </data>
   <data name="label2.Text" xml:space="preserve">
     <value>In the main screen type your ticket number into the textbox, then press one of the buttons or press ENTER.
 
 If you press a button then you'll open the ticket for that button's project. If you press ENTER then this app will guess the project.</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>All buttons have a name, a URL it opens, and search options.
+
+Press the "Edit" button to access the settings screen where you can add, edit, reorder, and delete buttons.
+
+Each button must have a unique name.</value>
   </data>
   <data name="label4.Text" xml:space="preserve">
     <value>When you create a shortcut to this app, you can give it a "Shortcut key" that will allow you to quickly launch this.
