@@ -123,11 +123,6 @@
 If you press a button then you'll open the ticket for that button's project. If you press ENTER then this app will guess the project.</value>
   </data>
   <data name="label4.Text" xml:space="preserve">
-    <value>When you create a shortcut to this app, you can give it a "Shortcut key" that will allow you to quickly launch this.
-
-If the app takes too long to launch it is because there are microsoft services running in the background, such as Calculator, Photos and Microsoft Store. To fix this, make sure they don't automatically launch on startup.</value>
-  </data>
-  <data name="label5.Text" xml:space="preserve">
     <value>When you right-click on the main window then you can see your most recent searches.
 
 Your recent searches are used to guess which project you want to search in when you search with ENTER.
